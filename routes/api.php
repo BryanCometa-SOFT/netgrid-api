@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+/** Favoritos */
+Route::get('favorite', [UserController::class, 'index'] );
+Route::post('favorite', [UserController::class, 'store'] );
