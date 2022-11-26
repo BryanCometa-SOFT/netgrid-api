@@ -18,10 +18,8 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer' ]);
+        return response()->json(['data' => $user, 'token' => $token, 'token_type' => 'Bearer' ],201);
     }
 
     public function register(Request $request)
@@ -44,8 +42,21 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['data' => $user, 'access_token' => $token, 'token_type' => 'Bearer' ]);
+        return response()->json(['data' => $user, 'token' => $token, 'token_type' => 'Bearer' ],201);
+    }
+
+    public function logout()
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json(['mensaje' => "Sesión cerreda con exito" ],201);
+    }
+
+    public function profile()
+    {
+        return response()->json(['data' => Auth::user() ],201);
     }
 }

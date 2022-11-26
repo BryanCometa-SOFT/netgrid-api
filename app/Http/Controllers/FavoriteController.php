@@ -6,6 +6,7 @@ use App\Http\Requests\StoreFavorite;
 use App\Models\Favorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
@@ -16,7 +17,7 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        $favorite = Favorite::all();
+        $favorite = Favorite::where('id_usuario', Auth::user()->id)->get(); ;
         return $favorite;
     }
 
@@ -39,7 +40,6 @@ class FavoriteController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id_usuario' => 'required',
             'ref_api' => 'required',
         ],
         [
@@ -50,7 +50,12 @@ class FavoriteController extends Controller
             return response()->json(["mensaje" => "Todos los campos son obligatorios","data" => $validator->errors()], 400);
         }
 
-        $favorite = Favorite::create($request->all());
+        $favorite = Favorite::create(
+            [
+                "ref_api" => $request->ref_api,
+                "id_usuario" =>  Auth::user()->id
+            ]
+        );
         return response()->json(["mensaje" => "Favorito agregado","data" => $favorite], 201);
     }
 

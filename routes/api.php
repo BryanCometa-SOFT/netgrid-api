@@ -16,16 +16,20 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 /** Auth */
 Route::post('login', [AuthController::class, 'login'] );
 Route::post('register', [AuthController::class, 'register'] );
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    /** Auth - User */
+    Route::get('logout', [AuthController::class, 'logout'] );
+    Route::post('profile', [AuthController::class, 'profile'] );
 
-/** Favoritos */
-Route::get('favorite', [FavoriteController::class, 'index'] );
-Route::post('favorite', [FavoriteController::class, 'store'] );
+    /** Favoritos */
+    Route::get('favorite', [FavoriteController::class, 'index'] );
+    Route::post('favorite', [FavoriteController::class, 'store'] );
+});
+
+
 
