@@ -25,6 +25,16 @@ class UserController extends Controller
             return response()->json(["mensaje" => "Los campos de nombre y email son obligatorios","data" => $validator->errors()], 400);
         }
 
-        return response()->json(["mensaje" => "Usuario actulizado con exito","data" => $user], 201);
+        $validEmail = User::where('id', Auth::user()->id)
+        ->where("email", $request->email)
+        ->count();
+
+        if($validEmail > 1){
+            return response()->json(["mensaje" => "El correo ya está registrado"], 400);
+        }
+
+        $updateUser = User::where('id', Auth::user()->id)->update($request->all());
+
+        return response()->json(["mensaje" => "Usuario actulizado con exito","data" => $updateUser ], 201);
     }
 }
