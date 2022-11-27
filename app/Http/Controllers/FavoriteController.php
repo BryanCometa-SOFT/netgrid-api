@@ -17,7 +17,7 @@ class FavoriteController extends Controller
      */
     public function index()
     {
-        $favorite = Favorite::where('id_usuario', Auth::user()->id)->get(); ;
+        $favorite = Favorite::where('id_usuario', Auth::user()->id)->get();
         return $favorite;
     }
 
@@ -50,13 +50,21 @@ class FavoriteController extends Controller
             return response()->json(["mensaje" => "Todos los campos son obligatorios","data" => $validator->errors()], 400);
         }
 
-        $favorite = Favorite::create(
-            [
-                "ref_api" => $request->ref_api,
-                "id_usuario" =>  Auth::user()->id
-            ]
-        );
-        return response()->json(["mensaje" => "Favorito agregado","data" => $favorite], 201);
+        $valid = Favorite::where('id_usuario', Auth::user()->id)
+            ->where("ref_api", $request->ref_api)
+            ->count();
+
+        if($valid == 0){
+            $favorite = Favorite::create(
+                [
+                    "ref_api" => $request->ref_api,
+                    "id_usuario" =>  Auth::user()->id
+                ]
+            );
+            return response()->json(["mensaje" => "Favorito agregado","data" => $favorite], 201);
+        }else{
+            return response()->json(["mensaje" => "Ya está añadido a favoritos"], 400);
+        }
     }
 
     /**

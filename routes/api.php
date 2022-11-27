@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,8 @@ Route::post('register', [AuthController::class, 'register'] );
 Route::middleware(['auth:sanctum'])->group(function () {
     /** Auth - User */
     Route::get('logout', [AuthController::class, 'logout'] );
-    Route::post('profile', [AuthController::class, 'profile'] );
+    Route::get('profile', [AuthController::class, 'profile'] );
+    Route::put('user', [UserController::class, 'update'] );
 
     /** Favoritos */
     Route::get('favorite', [FavoriteController::class, 'index'] );
